@@ -6,13 +6,14 @@ using Microsoft.Maui.Controls.Compatibility;
 using Microsoft.Maui.Controls.Compatibility.Platform.iOS;
 using Microsoft.Maui.Controls.Internals;
 using Microsoft.Maui.Controls.Platform;
+using Microsoft.Maui.Platform;
 //using Xamarin.Forms.Internals;
 //using Xamarin.Forms.Platform.iOS;
 using TopTabbedPage;
 using UIKit;
 using Platform = Microsoft.Maui.Controls.Compatibility.Platform.iOS.Platform;
 
-[assembly: ExportRenderer(typeof(CustomTopTabbedPage), typeof(TopTabbedRenderer))]
+//[assembly: ExportRenderer(typeof(CustomTopTabbedPage), typeof(TopTabbedRenderer))]
 namespace TopTabbedPage
 {
     public partial class TopTabbedRenderer : UIViewController
@@ -260,7 +261,9 @@ namespace TopTabbedPage
 
                 list.Add(renderer.ViewController);
                 titles.Add(Tabbed.Children[i].Title);
-                icons.Add(Tabbed.Children[i].IconImageSource.ToString().Remove(0, 6)); 
+
+                if (Tabbed.Children[i].IconImageSource != null)
+                    icons.Add(Tabbed.Children[i].IconImageSource.ToString().Remove(0, 6));
             }
 
             viewControllers = list.ToArray();
@@ -304,17 +307,23 @@ namespace TopTabbedPage
                 defaultBarColorSet = true;
             }
 
-            tabBar.BackgroundColor = barBackgroundColor.ToUIColor();
+            if (barBackgroundColor == null)
+                tabBar.BackgroundColor = Colors.Lime.ToPlatform();
+            else
+                tabBar.BackgroundColor = barBackgroundColor.ToPlatform();
         }
 
         void UpdateBarTextColor()
         {
-            tabBar.TextColor = Tabbed.BarTextColor.ToUIColor();
+            if (Tabbed.BarTextColor == null)
+                tabBar.TextColor = Colors.Black.ToPlatform();
+            else
+                tabBar.TextColor = Tabbed.BarTextColor.ToPlatform();
         }
 
         void UpdateBarIndicatorColor()
         {
-            tabBar.IndicatorColor = Tabbed.BarIndicatorColor.ToUIColor();
+            tabBar.IndicatorColor = Tabbed.BarIndicatorColor.ToPlatform();
         }
     }
 }
